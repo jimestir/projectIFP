@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?><project name="Untitled Gantt Project" company="" webLink="http://" view-date="2026-03-01" view-index="0" gantt-divider-location="351" resource-divider-location="300" version="3.3.3322" locale="en_US">
+    <description/>
+    <view zooming-state="default:9" id="gantt-chart">
+        <field id="tpd3" name="Name" width="200" order="0"/>
+        <field id="tpd4" name="Begin date" width="75" order="1"/>
+        <field id="tpd5" name="End date" width="75" order="2"/>
+        <field id="tpd15" name="Notes" width="20" order="3"/>
+        <option id="filter.completedTasks" value="false"/>
+        <option id="filter.dueTodayTasks" value="false"/>
+        <option id="filter.overdueTasks" value="false"/>
+        <option id="filter.inProgressTodayTasks" value="false"/>
+        <option id="color.recent"><![CDATA[#cc00cc #ff6600 #33ff00 #00ffff]]></option>
+    </view>
+    <view id="resource-table">
+        <field id="0" name="Name" width="210" order="0"/>
+        <field id="1" name="Default role" width="86" order="1"/>
+    </view>
+    <!-- -->
+    <calendars>
+        <day-types>
+            <day-type id="0"/>
+            <day-type id="1"/>
+            <default-week id="1" name="default" sun="1" mon="0" tue="0" wed="0" thu="0" fri="0" sat="1"/>
+            <only-show-weekends value="false"/>
+            <overriden-day-types/>
+            <days/>
+        </day-types>
+    </calendars>
+    <tasks empty-milestones="true">
+        <taskproperties>
+            <taskproperty id="tpd0" name="type" type="default" valuetype="icon"/>
+            <taskproperty id="tpd1" name="priority" type="default" valuetype="icon"/>
+            <taskproperty id="tpd2" name="info" type="default" valuetype="icon"/>
+            <taskproperty id="tpd3" name="name" type="default" valuetype="text"/>
+            <taskproperty id="tpd4" name="begindate" type="default" valuetype="date"/>
+            <taskproperty id="tpd5" name="enddate" type="default" valuetype="date"/>
+            <taskproperty id="tpd6" name="duration" type="default" valuetype="int"/>
+            <taskproperty id="tpd7" name="completion" type="default" valuetype="int"/>
+            <taskproperty id="tpd8" name="coordinator" type="default" valuetype="text"/>
+            <taskproperty id="tpd9" name="predecessorsr" type="default" valuetype="text"/>
+        </taskproperties>
+        <task id="1" uid="897ca067c06d4b5385e9ba20f3b79b45" name="Diseño de base de datos" color="#00ffff" shape="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" meeting="false" start="2026-04-27" duration="20" complete="0" expand="true">
+            <notes><![CDATA[Hito obligatorio antes de iniciar la fase de diseño]]></notes>
+        </task>
+        <task id="0" uid="55508694272a424b928cf70595694c92" name="Análisis y requisitos" meeting="false" start="2026-04-09" duration="12" complete="0" priority="2" expand="true">
+            <depend id="1" type="2" difference="0" hardness="Strong"/>
+            <depend id="2" type="2" difference="0" hardness="Strong"/>
+        </task>
+        <task id="2" uid="fe25ac3c3c944cdd93ac86958469bd18" name="Diseño de interfaz UI/UX" color="#33ff00" meeting="false" start="2026-04-27" duration="25" complete="0" expand="true">
+            <notes><![CDATA[Ejecución simultánea
+]]></notes>
+        </task>
+        <task id="3" uid="03ce07c80155488988c79b2bba9ca855" name="Construcción del núclo" color="#ff6600" meeting="false" start="2026-06-01" duration="36" complete="0" expand="true">
+            <notes><![CDATA[Desarrollo del backend para el panel y el frontend para el buscador de productos.]]></notes>
+        </task>
+        <task id="4" uid="c722cb1ccab5491f93cbab0102c8fbde" name="Módulo de geoposición y QA" color="#cc00cc" meeting="false" start="2026-07-21" duration="36" complete="0" expand="true">
+            <notes><![CDATA[Implementación de reservas geolocalizadas seguida de pruebas rigurosas de integración.]]></notes>
+        </task>
+    </tasks>
+    <resources/>
+    <allocations/>
+    <vacations/>
+    <previous/>
+    <roles roleset-name="Default"/>
+</project>

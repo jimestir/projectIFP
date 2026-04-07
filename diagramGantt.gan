@@ -1,15 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?><project name="Untitled Gantt Project" company="" webLink="http://" view-date="2026-03-01" view-index="0" gantt-divider-location="351" resource-divider-location="300" version="3.3.3322" locale="en_US">
+<?xml version="1.0" encoding="UTF-8"?><project name="Untitled Gantt Project" company="" webLink="http://" view-date="2026-03-08" view-index="0" gantt-divider-location="638" resource-divider-location="300" version="3.3.3322" locale="en_US">
     <description/>
-    <view zooming-state="default:9" id="gantt-chart">
-        <field id="tpd3" name="Name" width="200" order="0"/>
-        <field id="tpd4" name="Begin date" width="75" order="1"/>
-        <field id="tpd5" name="End date" width="75" order="2"/>
+    <view zooming-state="default:7" id="gantt-chart">
+        <field id="tpd3" name="Name" width="363" order="0"/>
+        <field id="tpd4" name="Begin date" width="136" order="1"/>
+        <field id="tpd5" name="End date" width="138" order="2"/>
         <field id="tpd15" name="Notes" width="20" order="3"/>
         <option id="filter.completedTasks" value="false"/>
         <option id="filter.dueTodayTasks" value="false"/>
         <option id="filter.overdueTasks" value="false"/>
         <option id="filter.inProgressTodayTasks" value="false"/>
-        <option id="color.recent"><![CDATA[#cc00cc #ff6600 #33ff00 #00ffff]]></option>
+        <option id="color.recent"><![CDATA[#00cc00 #cc3300 #666600 #660033 #660066 #330066 #006666 #cc00cc #ff6600 #33ff00]]></option>
     </view>
     <view id="resource-table">
         <field id="0" name="Name" width="210" order="0"/>
@@ -39,22 +39,31 @@
             <taskproperty id="tpd8" name="coordinator" type="default" valuetype="text"/>
             <taskproperty id="tpd9" name="predecessorsr" type="default" valuetype="text"/>
         </taskproperties>
-        <task id="1" uid="897ca067c06d4b5385e9ba20f3b79b45" name="Diseño de base de datos" color="#00ffff" shape="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" meeting="false" start="2026-04-27" duration="20" complete="0" expand="true">
-            <notes><![CDATA[Hito obligatorio antes de iniciar la fase de diseño]]></notes>
-        </task>
-        <task id="0" uid="55508694272a424b928cf70595694c92" name="Análisis y requisitos" meeting="false" start="2026-04-09" duration="12" complete="0" priority="2" expand="true">
+        <task id="0" uid="575d7dee45c64fb697332837acdf7806" name="Análisis de requisitos" meeting="false" start="2026-03-11" duration="15" complete="0" expand="true">
+            <notes><![CDATA[Identificación de puntos de dolor (información desactualizada) y beneficios (centralización).]]></notes>
             <depend id="1" type="2" difference="0" hardness="Strong"/>
-            <depend id="2" type="2" difference="0" hardness="Strong"/>
         </task>
-        <task id="2" uid="fe25ac3c3c944cdd93ac86958469bd18" name="Diseño de interfaz UI/UX" color="#33ff00" meeting="false" start="2026-04-27" duration="25" complete="0" expand="true">
-            <notes><![CDATA[Ejecución simultánea
-]]></notes>
+        <task id="1" uid="b49cd4f960324676a4d48d3dcbd853ef" name="Diseño de base de datos" color="#006666" meeting="false" start="2026-04-01" duration="20" complete="0" expand="true">
+            <notes><![CDATA[Creación de la estructura normalizada para gestionar stock y precios en tiempo real.]]></notes>
+            <depend id="3" type="2" difference="0" hardness="Strong"/>
         </task>
-        <task id="3" uid="03ce07c80155488988c79b2bba9ca855" name="Construcción del núclo" color="#ff6600" meeting="false" start="2026-06-01" duration="36" complete="0" expand="true">
-            <notes><![CDATA[Desarrollo del backend para el panel y el frontend para el buscador de productos.]]></notes>
+        <task id="3" uid="68ca1be6590f4bd1b4ffc07adee72d11" name="Desarrollo de Backend (Panel PYME)" color="#660066" meeting="false" start="2026-04-29" duration="40" complete="0" expand="true">
+            <notes><![CDATA[Programación de la lógica de actualización instantánea y gestión de inventario.]]></notes>
         </task>
-        <task id="4" uid="c722cb1ccab5491f93cbab0102c8fbde" name="Módulo de geoposición y QA" color="#cc00cc" meeting="false" start="2026-07-21" duration="36" complete="0" expand="true">
-            <notes><![CDATA[Implementación de reservas geolocalizadas seguida de pruebas rigurosas de integración.]]></notes>
+        <task id="2" uid="03ba74b19a8c4ba0a730587277ce795b" name="Diseño de interfaz (UI/UX)" color="#330066" meeting="false" start="2026-04-01" duration="25" complete="0" expand="true">
+            <notes><![CDATA[Diseño de la interfaz web moderna para el comparador y el panel de la PYME.]]></notes>
+        </task>
+        <task id="4" uid="4378f5928bc64c93841457e9511fc97d" name="Desarrollo Frontend (Buscador)" color="#660033" meeting="false" start="2026-05-06" duration="35" complete="0" expand="true">
+            <notes><![CDATA[Implementación de filtros por categoría/nombre y la tabla comparativa transparente.]]></notes>
+        </task>
+        <task id="5" uid="e615e47c59db4a7899c5aceb3bd1dcf0" name="Módulo de Geoposición y Reservas" color="#666600" meeting="false" start="2026-05-27" duration="20" complete="0" expand="true">
+            <notes><![CDATA[Integración de mapas para ubicación física y sistema de reserva de productos.]]></notes>
+        </task>
+        <task id="6" uid="9325fcf2a77640dbb60e008621df9fa3" name="Pruebas de integración y QA" color="#cc3300" meeting="false" start="2026-06-24" duration="15" complete="0" expand="true">
+            <notes><![CDATA[Validación de la funcionalidad total y corrección de errores críticos.]]></notes>
+        </task>
+        <task id="7" uid="f70ce58b23bf4b6084769a57b874363c" name="Despliegue y entrega final" color="#00cc00" meeting="false" start="2026-07-27" duration="10" complete="0" expand="true">
+            <notes><![CDATA[Puesta en producción y documentación final para el usuario/PYME.]]></notes>
         </task>
     </tasks>
     <resources/>

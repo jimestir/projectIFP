@@ -7,8 +7,6 @@ export type ReservationStatus =
   | "EXPIRED"
   | "PICKED_UP";
 
-export const API_PREFIX = "/api" as const;
-
 export type UserPublic = {
   id: string;
   email: string;

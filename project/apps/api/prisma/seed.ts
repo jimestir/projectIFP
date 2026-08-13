@@ -6,43 +6,58 @@ const prisma = new PrismaClient();
 const PHARMACIES = [
   {
     name: "Farmacia Centro",
+    description:
+      "Farmacia de referencia en el centro de Madrid. Más de 50 años de servicio al cliente con un equipo de profesionales cualificados. Especializada en dermocosmética y productos de parafarmacia.",
     address: "Calle Mayor 12",
     cp: "28013",
     lat: 40.4168,
     lng: -3.7038,
     phone: "910000001",
+    imageUrl: "https://images.unsplash.com/photo-1631549916768-4f8c1461e0ff?w=800&h=500&fit=crop",
   },
   {
     name: "Farmacia del Parque",
+    description:
+      "Tu farmacia de barrio junto al Retiro. Servicio de guardia 24h y atención personalizada. Amplio stock de medicamentos y productos de higiene personal.",
     address: "Av. de la Constitución 45",
     cp: "28014",
     lat: 40.415,
     lng: -3.7,
     phone: "910000002",
+    imageUrl: "https://images.unsplash.com/photo-1585435557343-3b092031a831?w=800&h=500&fit=crop",
   },
   {
     name: "Farmacia Norte",
+    description:
+      "Farmacia moderna en Chamberí con servicio de farmacia online. Recogida en tienda en 2 horas. Especialistas en nutrición y suplementos deportivos.",
     address: "Calle de Bravo Murillo 120",
     cp: "28020",
     lat: 40.447,
     lng: -3.704,
     phone: "910000003",
+    imageUrl: "https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=800&h=500&fit=crop",
   },
   {
     name: "Farmacia Sur",
+    description:
+      "Farmacia histórica en Embajadores, fundada en 1965. Servicio de vacunación y análisis clínicos. Atención en español, inglés y francés.",
     address: "Calle de Embajadores 88",
     cp: "28012",
     lat: 40.405,
     lng: -3.702,
     phone: "910000004",
+    imageUrl: "https://images.unsplash.com/photo-1607619056574-7b8d3ee536b2?w=800&h=500&fit=crop",
   },
   {
     name: "Farmacia Salamanca",
+    description:
+      "Farmacia premium en el barrio de Salamanca. Dermocosmética de lujo y asesoramiento dermatológico personalizado. Parfumerie niche y productos exclusivos.",
     address: "Calle de Serrano 50",
     cp: "28001",
     lat: 40.43,
     lng: -3.687,
     phone: "910000005",
+    imageUrl: "https://images.unsplash.com/photo-1576602976047-176eac5a83d0?w=800&h=500&fit=crop",
   },
 ] as const;
 

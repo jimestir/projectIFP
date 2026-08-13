@@ -2,11 +2,13 @@ import { z } from "zod";
 
 export const pharmacyCreateSchema = z.object({
   name: z.string().min(1).max(160),
+  description: z.string().max(1000).optional(),
   address: z.string().min(1).max(240),
   cp: z.string().min(4).max(12),
   lat: z.number().min(-90).max(90).optional(),
   lng: z.number().min(-180).max(180).optional(),
   phone: z.string().min(6).max(30).optional(),
+  imageUrl: z.string().url().max(500).optional(),
 });
 
 export const pharmacyUpdateSchema = pharmacyCreateSchema.partial().refine(

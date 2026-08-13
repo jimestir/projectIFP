@@ -45,15 +45,17 @@ model User {
 }
 
 model Pharmacy {
-  id        String   @id @default(uuid()) @db.Uuid
-  name      String
-  address   String
-  cp        String
-  lat       Float?
-  lng       Float?
-  phone     String?
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String
+  description String?
+  address     String
+  cp          String
+  lat         Float?
+  lng         Float?
+  phone       String?
+  imageUrl    String?   @map("image_url")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
 
   users        User[]
   inventory    Inventory[]

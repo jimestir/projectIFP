@@ -14,11 +14,13 @@ export const pharmaciesRouter = Router();
 const pharmacySelect = {
   id: true,
   name: true,
+  description: true,
   address: true,
   cp: true,
   lat: true,
   lng: true,
   phone: true,
+  imageUrl: true,
 } as const;
 
 pharmaciesRouter.get("/", async (req, res) => {

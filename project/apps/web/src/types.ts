@@ -23,11 +23,13 @@ export type AuthResponse = {
 export type Pharmacy = {
   id: string;
   name: string;
+  description: string | null;
   address: string;
   cp: string;
   lat: number | null;
   lng: number | null;
   phone: string | null;
+  imageUrl: string | null;
 };
 
 export type Product = {

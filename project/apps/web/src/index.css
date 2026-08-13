@@ -382,6 +382,171 @@ th {
   background: #f0fdf4;
 }
 
+.pharmacy-card {
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  overflow: hidden;
+  padding: 0;
+}
+
+.pharmacy-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 34px rgba(15, 23, 42, 0.14);
+}
+
+.pharmacy-card-img-wrap {
+  height: 160px;
+  overflow: hidden;
+}
+
+.pharmacy-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pharmacy-card-body {
+  padding: 0.9rem 1rem 1rem;
+}
+
+.pharmacy-card-body h2 {
+  margin: 0 0 0.25rem;
+  font-size: 1.05rem;
+}
+
+.pharmacy-card-body p {
+  margin: 0.15rem 0;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(4px);
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+  overflow-y: auto;
+}
+
+.modal-content {
+  background: var(--surface);
+  border-radius: 18px;
+  width: min(680px, 100%);
+  max-height: calc(100vh - 3rem);
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 30px 80px rgba(15, 23, 42, 0.25);
+}
+
+.modal-close {
+  position: absolute;
+  top: 0.7rem;
+  right: 0.8rem;
+  background: rgba(255, 255, 255, 0.85);
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  font-size: 1.4rem;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  z-index: 5;
+  line-height: 1;
+}
+
+.modal-close:hover {
+  background: #fff;
+}
+
+.pharmacy-modal-img-wrap {
+  height: 260px;
+  overflow: hidden;
+  border-radius: 18px 18px 0 0;
+}
+
+.pharmacy-modal-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pharmacy-modal-body {
+  padding: 1.2rem 1.5rem 1.6rem;
+}
+
+.pharmacy-modal-body h1 {
+  margin: 0 0 0.25rem;
+}
+
+.pharmacy-modal-address {
+  color: var(--muted);
+  margin: 0 0 1rem;
+}
+
+.pharmacy-modal-section {
+  margin-top: 1rem;
+}
+
+.pharmacy-modal-section h2 {
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  margin: 0 0 0.4rem;
+}
+
+.pharmacy-modal-section p {
+  margin: 0;
+}
+
+.pharmacy-modal-phones {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.pharmacy-modal-phones a {
+  font-weight: 700;
+}
+
+.pharmacy-modal-data {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.2rem 0.8rem;
+  margin: 0;
+}
+
+.pharmacy-modal-data dt {
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.pharmacy-modal-data dd {
+  margin: 0;
+}
+
+.pharmacy-modal-map-wrap {
+  border-radius: 12px;
+  overflow: hidden;
+  margin-top: 0.4rem;
+}
+
+.pharmacy-modal-map {
+  height: 260px;
+  width: 100%;
+}
+
+.pharmacy-modal-geo-link {
+  margin-top: 0.4rem;
+  font-size: 0.85rem;
+}
+
 @media (max-width: 800px) {
   .topbar {
     flex-direction: column;

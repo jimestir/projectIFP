@@ -4,6 +4,7 @@ import helmet from "helmet";
 import { env } from "./config/env.js";
 import { authRouter } from "./routes/auth.js";
 import { healthRouter } from "./routes/health.js";
+import { pharmaciesRouter } from "./routes/pharmacies.js";
 
 export function createApp() {
   const app = express();
@@ -27,6 +28,7 @@ export function createApp() {
 
   app.use("/api/health", healthRouter);
   app.use("/api/auth", authRouter);
+  app.use("/api/pharmacies", pharmaciesRouter);
 
   app.use((_req, res) => {
     res.status(404).json({ error: "Not found" });

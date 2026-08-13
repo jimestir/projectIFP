@@ -16,6 +16,7 @@ export function Layout() {
           {isAuthenticated && <NavLink to="/reservations">Reservas</NavLink>}
           {user?.role === "PHARMACY" && <NavLink to="/inventory">Inventario</NavLink>}
           {user?.role === "PHARMACY" && <NavLink to="/live">En vivo</NavLink>}
+          {user?.role === "ADMIN" && <NavLink to="/admin/pharmacies">Admin</NavLink>}
         </nav>
         <div className="auth-box">
           {isAuthenticated ? (

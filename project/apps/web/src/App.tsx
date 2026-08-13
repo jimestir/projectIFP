@@ -2,6 +2,7 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { Layout } from "./components/Layout";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
+import { AdminPharmaciesPage } from "./pages/AdminPharmaciesPage";
 import { HomePage } from "./pages/HomePage";
 import { InventoryPage } from "./pages/InventoryPage";
 import { LivePage } from "./pages/LivePage";
@@ -41,6 +42,14 @@ export default function App() {
               element={
                 <ProtectedRoute roles={["PHARMACY"]}>
                   <LivePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="admin/pharmacies"
+              element={
+                <ProtectedRoute roles={["ADMIN"]}>
+                  <AdminPharmaciesPage />
                 </ProtectedRoute>
               }
             />

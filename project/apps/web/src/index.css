@@ -338,6 +338,26 @@ th {
   margin-bottom: 0.35rem;
 }
 
+.admin-form h2 {
+  margin: 0 0 0.8rem;
+}
+
+.admin-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.8rem;
+}
+
+.admin-actions {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 0.8rem;
+}
+
+.row-active {
+  background: #f0fdf4;
+}
+
 @media (max-width: 800px) {
   .topbar {
     flex-direction: column;

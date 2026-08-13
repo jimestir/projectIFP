@@ -82,6 +82,30 @@ export const api = {
   listPharmacies: (cp?: string) =>
     request<Pharmacy[]>(`/api/pharmacies${cp ? `?cp=${encodeURIComponent(cp)}` : ""}`),
 
+  getPharmacy: (id: string) =>
+    request<Pharmacy>(`/api/pharmacies/${id}`),
+
+  createPharmacy: (
+    token: string,
+    body: { name: string; address: string; cp: string; lat?: number; lng?: number; phone?: string },
+  ) =>
+    request<Pharmacy>("/api/pharmacies", {
+      method: "POST",
+      token,
+      body,
+    }),
+
+  updatePharmacy: (
+    token: string,
+    id: string,
+    body: { name?: string; address?: string; cp?: string; lat?: number; lng?: number; phone?: string },
+  ) =>
+    request<Pharmacy>(`/api/pharmacies/${id}`, {
+      method: "PATCH",
+      token,
+      body,
+    }),
+
   listProducts: (q?: string) =>
     request<Product[]>(`/api/products${q ? `?q=${encodeURIComponent(q)}` : ""}`),
 

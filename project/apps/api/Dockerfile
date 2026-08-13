@@ -26,6 +26,9 @@ RUN npm run build -w @stock-for-pymes/api
 FROM node:20-alpine AS production
 WORKDIR /app
 
+# Install curl for healthcheck
+RUN apk add --no-cache curl
+
 # Copy built files maintaining structure
 COPY --from=base /app/node_modules ./node_modules
 COPY --from=base /app/package.json ./
@@ -41,4 +44,4 @@ ENV API_PORT=3000
 EXPOSE 3000
 
 # Start with migrations and then run the app
-CMD ["sh", "-c", "cd apps/api && npx prisma migrate deploy && node dist/index.js"]
+CMD ["sh", "-c", "echo 'Starting migrations...' && cd apps/api && npx prisma migrate deploy && echo 'Migrations done. Starting app...' && node dist/index.js"]

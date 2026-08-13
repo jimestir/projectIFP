@@ -21,8 +21,9 @@ services:
       - key: NODE_ENV
         value: production
       - key: CORS_ORIGIN
-        sync: false
+        value: "*"
     healthCheckPath: /api/health
+    autoDeploy: false
 
 databases:
   - name: stock-for-pymes-db

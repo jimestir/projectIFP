@@ -1,0 +1,131 @@
+// Sprint 1: modelo de dominio Stock for PYMEs
+// Concurrencia: Inventory.version + UNIQUE(pharmacyId, productId) + stock >= 0 (SQL)
+// Reservas: estados + expiresAt + quantity
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  CLIENT
+  PHARMACY
+  ADMIN
+}
+
+enum ReservationStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  EXPIRED
+  PICKED_UP
+}
+
+model User {
+  id           String   @id @default(uuid()) @db.Uuid
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  name         String
+  phone        String?
+  role         UserRole @default(CLIENT)
+  pharmacyId   String?  @map("pharmacy_id") @db.Uuid
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  pharmacy     Pharmacy?     @relation(fields: [pharmacyId], references: [id], onDelete: SetNull)
+  reservations Reservation[]
+
+  @@index([role])
+  @@index([pharmacyId])
+  @@map("users")
+}
+
+model Pharmacy {
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String
+  address   String
+  cp        String
+  lat       Float?
+  lng       Float?
+  phone     String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  users        User[]
+  inventory    Inventory[]
+  reservations Reservation[]
+
+  @@index([cp])
+  @@map("pharmacies")
+}
+
+model Category {
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String   @unique
+  createdAt DateTime @default(now()) @map("created_at")
+
+  products Product[]
+
+  @@map("categories")
+}
+
+model Product {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String
+  description String?
+  categoryId  String?  @map("category_id") @db.Uuid
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  category     Category?     @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  inventory    Inventory[]
+  reservations Reservation[]
+
+  @@index([name])
+  @@index([categoryId])
+  @@map("products")
+}
+
+model Inventory {
+  id         String   @id @default(uuid()) @db.Uuid
+  pharmacyId String   @map("pharmacy_id") @db.Uuid
+  productId  String   @map("product_id") @db.Uuid
+  stock      Int      @default(0)
+  price      Decimal  @db.Decimal(10, 2)
+  version    Int      @default(1)
+  updatedAt  DateTime @updatedAt @map("updated_at")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  pharmacy Pharmacy @relation(fields: [pharmacyId], references: [id], onDelete: Cascade)
+  product  Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([pharmacyId, productId])
+  @@index([productId])
+  @@index([pharmacyId])
+  @@map("inventory")
+}
+
+model Reservation {
+  id         String            @id @default(uuid()) @db.Uuid
+  userId     String            @map("user_id") @db.Uuid
+  pharmacyId String            @map("pharmacy_id") @db.Uuid
+  productId  String            @map("product_id") @db.Uuid
+  quantity   Int               @default(1)
+  status     ReservationStatus @default(CONFIRMED)
+  expiresAt  DateTime          @map("expires_at")
+  createdAt  DateTime          @default(now()) @map("created_at")
+  updatedAt  DateTime          @updatedAt @map("updated_at")
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  pharmacy Pharmacy @relation(fields: [pharmacyId], references: [id], onDelete: Cascade)
+  product  Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([pharmacyId, status])
+  @@index([status, expiresAt])
+  @@map("reservations")
+}

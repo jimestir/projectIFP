@@ -1,0 +1,695 @@
+openapi: 3.0.3
+info:
+  title: Stock for PYMEs API
+  version: 0.1.0
+  description: |
+    Contrato API v0 (Sprint 0). Endpoints de dominio se implementan en Sprint 2–3.
+    Health está disponible desde Sprint 0.
+servers:
+  - url: http://localhost:3000
+    description: Desarrollo local
+
+tags:
+  - name: Health
+  - name: Auth
+  - name: Pharmacies
+  - name: Products
+  - name: Inventory
+  - name: Search
+  - name: Reservations
+  - name: Events
+
+paths:
+  /api/health:
+    get:
+      tags: [Health]
+      summary: Estado del servicio y de la base de datos
+      operationId: getHealth
+      responses:
+        "200":
+          description: API y BD operativas
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthOk"
+        "503":
+          description: BD no disponible
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthDegraded"
+
+  /api/auth/register:
+    post:
+      tags: [Auth]
+      summary: Registro de usuario (cliente o farmacia)
+      operationId: register
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterRequest"
+      responses:
+        "201":
+          description: Usuario creado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "409":
+          $ref: "#/components/responses/Conflict"
+
+  /api/auth/login:
+    post:
+      tags: [Auth]
+      summary: Login y emisión de JWT
+      operationId: login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: Token emitido
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/pharmacies:
+    get:
+      tags: [Pharmacies]
+      summary: Listado de farmacias (filtro opcional por CP)
+      operationId: listPharmacies
+      parameters:
+        - name: cp
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Lista de farmacias
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Pharmacy"
+    post:
+      tags: [Pharmacies]
+      summary: Alta de farmacia (admin)
+      operationId: createPharmacy
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PharmacyCreate"
+      responses:
+        "201":
+          description: Farmacia creada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Pharmacy"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+
+  /api/pharmacies/{id}:
+    get:
+      tags: [Pharmacies]
+      summary: Detalle de farmacia
+      operationId: getPharmacy
+      parameters:
+        - $ref: "#/components/parameters/IdPath"
+      responses:
+        "200":
+          description: Farmacia
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Pharmacy"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    patch:
+      tags: [Pharmacies]
+      summary: Actualizar farmacia (admin o dueño)
+      operationId: updatePharmacy
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/IdPath"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PharmacyUpdate"
+      responses:
+        "200":
+          description: Farmacia actualizada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Pharmacy"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /api/products:
+    get:
+      tags: [Products]
+      summary: Catálogo de productos
+      operationId: listProducts
+      parameters:
+        - name: q
+          in: query
+          schema:
+            type: string
+        - name: categoryId
+          in: query
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Lista de productos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Product"
+
+  /api/inventory:
+    get:
+      tags: [Inventory]
+      summary: Inventario de la farmacia autenticada
+      operationId: listInventory
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Líneas de inventario
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/InventoryItem"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+    put:
+      tags: [Inventory]
+      summary: Upsert stock/precio de un producto en la farmacia
+      operationId: upsertInventory
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InventoryUpsert"
+      responses:
+        "200":
+          description: Inventario actualizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InventoryItem"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+
+  /api/search:
+    get:
+      tags: [Search]
+      summary: Comparador de precios y stock
+      operationId: searchCompare
+      parameters:
+        - name: q
+          in: query
+          description: Nombre de producto
+          schema:
+            type: string
+        - name: cp
+          in: query
+          schema:
+            type: string
+        - name: categoryId
+          in: query
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Filas comparativas por farmacia
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SearchResultRow"
+
+  /api/reservations:
+    get:
+      tags: [Reservations]
+      summary: Reservas del usuario o de la farmacia autenticada
+      operationId: listReservations
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Lista de reservas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Reservation"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+    post:
+      tags: [Reservations]
+      summary: Crear reserva atómica (descuenta stock)
+      operationId: createReservation
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReservationCreate"
+      responses:
+        "201":
+          description: Reserva confirmada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Reservation"
+        "409":
+          description: Stock insuficiente (conflicto de concurrencia)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/reservations/{id}:
+    patch:
+      tags: [Reservations]
+      summary: Cancelar o marcar retirada
+      operationId: updateReservation
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/IdPath"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [status]
+              properties:
+                status:
+                  type: string
+                  enum: [CANCELLED, PICKED_UP]
+      responses:
+        "200":
+          description: Reserva actualizada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Reservation"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /api/events/pharmacy:
+    get:
+      tags: [Events]
+      summary: SSE de eventos de stock/reservas para la farmacia autenticada
+      operationId: pharmacyEvents
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Stream text/event-stream
+          content:
+            text/event-stream:
+              schema:
+                type: string
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    IdPath:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+
+  responses:
+    BadRequest:
+      description: Solicitud inválida
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    Unauthorized:
+      description: No autenticado
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    Forbidden:
+      description: Sin permisos
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    NotFound:
+      description: Recurso no encontrado
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    Conflict:
+      description: Conflicto de negocio
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+  schemas:
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: string
+        details:
+          type: object
+          additionalProperties: true
+
+    HealthOk:
+      type: object
+      properties:
+        status:
+          type: string
+          example: ok
+        service:
+          type: string
+          example: api
+        database:
+          type: string
+          example: up
+        timestamp:
+          type: string
+          format: date-time
+
+    HealthDegraded:
+      type: object
+      properties:
+        status:
+          type: string
+          example: degraded
+        service:
+          type: string
+        database:
+          type: string
+          example: down
+        timestamp:
+          type: string
+          format: date-time
+
+    RegisterRequest:
+      type: object
+      required: [email, password, name, role]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 8
+        name:
+          type: string
+        phone:
+          type: string
+        role:
+          type: string
+          enum: [CLIENT, PHARMACY]
+        pharmacyId:
+          type: string
+          format: uuid
+          description: Requerido si role=PHARMACY y la farmacia ya existe
+
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+
+    AuthResponse:
+      type: object
+      required: [token, user]
+      properties:
+        token:
+          type: string
+        user:
+          $ref: "#/components/schemas/UserPublic"
+
+    UserPublic:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+        name:
+          type: string
+        role:
+          type: string
+          enum: [CLIENT, PHARMACY, ADMIN]
+        pharmacyId:
+          type: string
+          format: uuid
+          nullable: true
+
+    Pharmacy:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        address:
+          type: string
+        cp:
+          type: string
+        lat:
+          type: number
+          nullable: true
+        lng:
+          type: number
+          nullable: true
+        phone:
+          type: string
+          nullable: true
+
+    PharmacyCreate:
+      type: object
+      required: [name, address, cp]
+      properties:
+        name:
+          type: string
+        address:
+          type: string
+        cp:
+          type: string
+        lat:
+          type: number
+        lng:
+          type: number
+        phone:
+          type: string
+
+    PharmacyUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        address:
+          type: string
+        cp:
+          type: string
+        lat:
+          type: number
+        lng:
+          type: number
+        phone:
+          type: string
+
+    Product:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        categoryId:
+          type: string
+          format: uuid
+          nullable: true
+
+    InventoryItem:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        pharmacyId:
+          type: string
+          format: uuid
+        productId:
+          type: string
+          format: uuid
+        stock:
+          type: integer
+          minimum: 0
+        price:
+          type: number
+          format: double
+        version:
+          type: integer
+        updatedAt:
+          type: string
+          format: date-time
+
+    InventoryUpsert:
+      type: object
+      required: [productId, stock, price]
+      properties:
+        productId:
+          type: string
+          format: uuid
+        stock:
+          type: integer
+          minimum: 0
+        price:
+          type: number
+          minimum: 0
+
+    SearchResultRow:
+      type: object
+      properties:
+        productId:
+          type: string
+          format: uuid
+        productName:
+          type: string
+        pharmacyId:
+          type: string
+          format: uuid
+        pharmacyName:
+          type: string
+        cp:
+          type: string
+        stock:
+          type: integer
+        price:
+          type: number
+        lat:
+          type: number
+          nullable: true
+        lng:
+          type: number
+          nullable: true
+
+    ReservationCreate:
+      type: object
+      required: [pharmacyId, productId, quantity]
+      properties:
+        pharmacyId:
+          type: string
+          format: uuid
+        productId:
+          type: string
+          format: uuid
+        quantity:
+          type: integer
+          minimum: 1
+          default: 1
+
+    Reservation:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        userId:
+          type: string
+          format: uuid
+        pharmacyId:
+          type: string
+          format: uuid
+        productId:
+          type: string
+          format: uuid
+        quantity:
+          type: integer
+        status:
+          type: string
+          enum: [PENDING, CONFIRMED, CANCELLED, EXPIRED, PICKED_UP]
+        expiresAt:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time

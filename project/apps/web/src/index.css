@@ -306,6 +306,38 @@ th {
   font-size: 0.8rem;
 }
 
+.view-toggle {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.map-wrap {
+  padding: 0.5rem;
+  overflow: hidden;
+}
+
+.map-canvas {
+  height: 420px;
+  width: 100%;
+  border-radius: 12px;
+}
+
+.map-empty {
+  min-height: 120px;
+  display: grid;
+  place-items: center;
+}
+
+.map-popup-list {
+  margin: 0.4rem 0 0;
+  padding-left: 1.1rem;
+  max-width: 240px;
+}
+
+.map-popup-list li {
+  margin-bottom: 0.35rem;
+}
+
 @media (max-width: 800px) {
   .topbar {
     flex-direction: column;

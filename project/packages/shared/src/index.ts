@@ -66,6 +66,8 @@ export type Reservation = {
   userId: string;
   pharmacyId: string;
   productId: string;
+  productName?: string | null;
+  pharmacyName?: string | null;
   quantity: number;
   status: ReservationStatus;
   expiresAt: string;

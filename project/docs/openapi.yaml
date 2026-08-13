@@ -682,6 +682,12 @@ components:
         productId:
           type: string
           format: uuid
+        productName:
+          type: string
+          nullable: true
+        pharmacyName:
+          type: string
+          nullable: true
         quantity:
           type: integer
         status:

@@ -1,7 +1,8 @@
 import { useState, type FormEvent } from "react";
 import { Link } from "react-router-dom";
-import { ApiError, api } from "../lib/api";
+import { SearchMap } from "../components/SearchMap";
 import { useAuth } from "../context/AuthContext";
+import { ApiError, api } from "../lib/api";
 import type { SearchResultRow } from "../types";
 
 export function HomePage() {
@@ -12,6 +13,7 @@ export function HomePage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
+  const [view, setView] = useState<"table" | "map">("table");
 
   async function onSearch(e?: FormEvent) {
     e?.preventDefault();
@@ -45,12 +47,18 @@ export function HomePage() {
         productId: row.productId,
         quantity: 1,
       });
-      setMessage(`Reserva creada (${reservation.status}). Stock descontado.`);
+      setMessage(
+        `Reserva creada (${reservation.status})${
+          reservation.productName ? `: ${reservation.productName}` : ""
+        }.`,
+      );
       await onSearch();
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "No se pudo reservar");
     }
   }
+
+  const canReserve = isAuthenticated && user?.role === "CLIENT";
 
   return (
     <section className="stack">
@@ -59,7 +67,7 @@ export function HomePage() {
           <p className="eyebrow">ROPO · Research Online, Purchase Offline</p>
           <h1>Compara stock y precios de farmacias locales</h1>
           <p className="muted">
-            Busca un producto, filtra por código postal y reserva para recoger en tienda.
+            Busca un producto, filtra por código postal, mira el mapa y reserva para recoger en tienda.
           </p>
         </div>
         {!isAuthenticated && (
@@ -95,52 +103,75 @@ export function HomePage() {
       {error && <div className="alert error">{error}</div>}
       {message && <div className="alert ok">{message}</div>}
 
-      <div className="card table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Producto</th>
-              <th>Farmacia</th>
-              <th>CP</th>
-              <th>Stock</th>
-              <th>Precio</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((row) => (
-              <tr key={`${row.pharmacyId}-${row.productId}`}>
-                <td>{row.productName}</td>
-                <td>{row.pharmacyName}</td>
-                <td>{row.cp}</td>
-                <td>
-                  <span className={row.stock > 0 ? "badge ok" : "badge warn"}>
-                    {row.stock}
-                  </span>
-                </td>
-                <td>{row.price.toFixed(2)} €</td>
-                <td>
-                  <button
-                    type="button"
-                    className="btn small"
-                    disabled={row.stock < 1 || user?.role === "PHARMACY"}
-                    onClick={() => reserve(row)}
-                  >
-                    Reservar
-                  </button>
-                </td>
-              </tr>
-            ))}
-            {rows.length === 0 && !loading && (
+      {rows.length > 0 && (
+        <div className="view-toggle">
+          <button
+            type="button"
+            className={`btn small ${view === "table" ? "" : "ghost"}`}
+            onClick={() => setView("table")}
+          >
+            Tabla
+          </button>
+          <button
+            type="button"
+            className={`btn small ${view === "map" ? "" : "ghost"}`}
+            onClick={() => setView("map")}
+          >
+            Mapa
+          </button>
+        </div>
+      )}
+
+      {view === "map" && rows.length > 0 ? (
+        <SearchMap rows={rows} canReserve={canReserve} onReserve={reserve} />
+      ) : (
+        <div className="card table-wrap">
+          <table>
+            <thead>
               <tr>
-                <td colSpan={6} className="muted center">
-                  Ejecuta una búsqueda para ver resultados.
-                </td>
+                <th>Producto</th>
+                <th>Farmacia</th>
+                <th>CP</th>
+                <th>Stock</th>
+                <th>Precio</th>
+                <th></th>
               </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {rows.map((row) => (
+                <tr key={`${row.pharmacyId}-${row.productId}`}>
+                  <td>{row.productName}</td>
+                  <td>{row.pharmacyName}</td>
+                  <td>{row.cp}</td>
+                  <td>
+                    <span className={row.stock > 0 ? "badge ok" : "badge warn"}>
+                      {row.stock}
+                    </span>
+                  </td>
+                  <td>{row.price.toFixed(2)} €</td>
+                  <td>
+                    <button
+                      type="button"
+                      className="btn small"
+                      disabled={row.stock < 1 || !canReserve}
+                      onClick={() => reserve(row)}
+                    >
+                      Reservar
+                    </button>
+                  </td>
+                </tr>
+              ))}
+              {rows.length === 0 && !loading && (
+                <tr>
+                  <td colSpan={6} className="muted center">
+                    Ejecuta una búsqueda para ver resultados.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      )}
     </section>
   );
 }

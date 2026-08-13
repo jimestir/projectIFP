@@ -24,6 +24,8 @@ const reservationSelect = {
   status: true,
   expiresAt: true,
   createdAt: true,
+  product: { select: { name: true } },
+  pharmacy: { select: { name: true } },
 } as const;
 
 function toReservation(row: {
@@ -35,12 +37,16 @@ function toReservation(row: {
   status: ReservationStatus;
   expiresAt: Date;
   createdAt: Date;
+  product?: { name: string } | null;
+  pharmacy?: { name: string } | null;
 }) {
   return {
     id: row.id,
     userId: row.userId,
     pharmacyId: row.pharmacyId,
     productId: row.productId,
+    productName: row.product?.name ?? null,
+    pharmacyName: row.pharmacy?.name ?? null,
     quantity: row.quantity,
     status: row.status,
     expiresAt: row.expiresAt.toISOString(),

@@ -91,9 +91,9 @@ Usuarios demo (password `Password123!`):
 |------|--------|--------|
 | 1 | A Análisis + B BD | Sprint 0 ✅ · Sprint 1 ✅ |
 | 2 | D Backend API | ✅ OpenAPI implementado |
-| 3 | C/E Frontend React | En curso |
-| 4 | F Geo + reservas UI | Leaflet/OSM |
-| 5 | G/H QA + despliegue | Linux + Nginx |
+| 3 | C/E Frontend React | ✅ base + mapa |
+| 4 | F Geo + reservas UI | Leaflet/OSM ✅ · job TTL ✅ |
+| 5 | G/H QA + despliegue | Pendiente |
 
 ## Documentación
 

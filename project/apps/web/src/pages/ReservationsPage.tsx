@@ -57,8 +57,8 @@ export function ReservationsPage() {
           <table>
             <thead>
               <tr>
-                <th>ID</th>
                 <th>Producto</th>
+                <th>Farmacia</th>
                 <th>Cant.</th>
                 <th>Estado</th>
                 <th>Expira</th>
@@ -68,15 +68,27 @@ export function ReservationsPage() {
             <tbody>
               {items.map((r) => (
                 <tr key={r.id}>
-                  <td className="mono">{r.id.slice(0, 8)}…</td>
-                  <td className="mono">{r.productId.slice(0, 8)}…</td>
+                  <td>{r.productName ?? r.productId.slice(0, 8)}</td>
+                  <td>{r.pharmacyName ?? r.pharmacyId.slice(0, 8)}</td>
                   <td>{r.quantity}</td>
                   <td>
-                    <span className="badge">{r.status}</span>
+                    <span
+                      className={`badge ${
+                        r.status === "CONFIRMED"
+                          ? "ok"
+                          : r.status === "CANCELLED" || r.status === "EXPIRED"
+                            ? "warn"
+                            : ""
+                      }`}
+                    >
+                      {r.status}
+                    </span>
                   </td>
                   <td>{new Date(r.expiresAt).toLocaleString()}</td>
                   <td className="row-actions">
-                    {(user?.role === "CLIENT" || user?.role === "PHARMACY" || user?.role === "ADMIN") &&
+                    {(user?.role === "CLIENT" ||
+                      user?.role === "PHARMACY" ||
+                      user?.role === "ADMIN") &&
                       (r.status === "CONFIRMED" || r.status === "PENDING") && (
                         <button
                           type="button"

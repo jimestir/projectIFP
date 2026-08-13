@@ -5,6 +5,7 @@ import { env } from "./config/env.js";
 import { authRouter } from "./routes/auth.js";
 import { healthRouter } from "./routes/health.js";
 import { pharmaciesRouter } from "./routes/pharmacies.js";
+import { productsRouter } from "./routes/products.js";
 
 export function createApp() {
   const app = express();
@@ -29,6 +30,7 @@ export function createApp() {
   app.use("/api/health", healthRouter);
   app.use("/api/auth", authRouter);
   app.use("/api/pharmacies", pharmaciesRouter);
+  app.use("/api/products", productsRouter);
 
   app.use((_req, res) => {
     res.status(404).json({ error: "Not found" });

@@ -1,0 +1,48 @@
+import cors from "cors";
+import express from "express";
+import helmet from "helmet";
+import { env } from "./config/env.js";
+import { authRouter } from "./routes/auth.js";
+import { healthRouter } from "./routes/health.js";
+import { pharmaciesRouter } from "./routes/pharmacies.js";
+import { inventoryRouter } from "./routes/inventory.js";
+import { productsRouter } from "./routes/products.js";
+import { eventsRouter } from "./routes/events.js";
+import { reservationsRouter } from "./routes/reservations.js";
+import { searchRouter } from "./routes/search.js";
+
+export function createApp() {
+  const app = express();
+
+  app.use(helmet());
+  app.use(
+    cors({
+      origin: env.CORS_ORIGIN,
+      credentials: true,
+    }),
+  );
+  app.use(express.json({ limit: "1mb" }));
+
+  app.get("/", (_req, res) => {
+    res.json({
+      name: "Stock for PYMEs API",
+      version: "0.1.0",
+      docs: "/api/health",
+    });
+  });
+
+  app.use("/api/health", healthRouter);
+  app.use("/api/auth", authRouter);
+  app.use("/api/pharmacies", pharmaciesRouter);
+  app.use("/api/products", productsRouter);
+  app.use("/api/inventory", inventoryRouter);
+  app.use("/api/search", searchRouter);
+  app.use("/api/reservations", reservationsRouter);
+  app.use("/api/events", eventsRouter);
+
+  app.use((_req, res) => {
+    res.status(404).json({ error: "Not found" });
+  });
+
+  return app;
+}

@@ -1,0 +1,32 @@
+{
+  "name": "stock-for-pymes",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Stock for PYMEs — plataforma ROPO de stock y reservas para farmacias locales",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:api": "npm run dev -w @stock-for-pymes/api",
+    "dev:web": "npm run dev -w @stock-for-pymes/web",
+    "build:api": "npm run build -w @stock-for-pymes/api",
+    "build:web": "npm run build -w @stock-for-pymes/web",
+    "test": "npm run test -w @stock-for-pymes/api",
+    "db:up": "docker compose up -d",
+    "db:down": "docker compose down",
+    "db:logs": "docker compose logs -f postgres",
+    "prisma:generate": "npm run prisma:generate -w @stock-for-pymes/api",
+    "prisma:migrate": "npm run prisma:migrate -w @stock-for-pymes/api",
+    "prisma:studio": "npm run prisma:studio -w @stock-for-pymes/api"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "allowScripts": {
+    "@prisma/client@6.19.3": true,
+    "prisma@6.19.3": true,
+    "@prisma/engines@6.19.3": true,
+    "esbuild@0.28.2": true
+  }
+}

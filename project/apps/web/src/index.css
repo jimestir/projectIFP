@@ -1,0 +1,564 @@
+:root {
+  color-scheme: light;
+  --bg: #f4f7fb;
+  --surface: #ffffff;
+  --text: #0f172a;
+  --muted: #64748b;
+  --line: #e2e8f0;
+  --brand: #0f766e;
+  --brand-dark: #0b5f59;
+  --danger: #b91c1c;
+  --ok: #166534;
+  --warn: #b45309;
+  --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+  font-family: Inter, system-ui, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color: var(--text);
+  background: radial-gradient(circle at top left, #dbeafe, transparent 28%),
+    radial-gradient(circle at top right, #ccfbf1, transparent 24%), var(--bg);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+a {
+  color: var(--brand);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+.app-shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+}
+
+.topbar {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.9rem 1.4rem;
+  background: rgba(255, 255, 255, 0.9);
+  border-bottom: 1px solid var(--line);
+  backdrop-filter: blur(10px);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.brand {
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+
+.nav,
+.auth-box,
+.row-actions,
+.hero-actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.nav a {
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.nav a.active {
+  color: var(--brand);
+}
+
+.user-chip {
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.main {
+  width: min(1100px, calc(100% - 2rem));
+  margin: 1.5rem auto 2rem;
+}
+
+.footer {
+  text-align: center;
+  color: var(--muted);
+  padding: 1rem;
+  border-top: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.stack {
+  display: grid;
+  gap: 1rem;
+}
+
+.hero {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: end;
+}
+
+.hero h1,
+.auth-card h1,
+h1 {
+  margin: 0.2rem 0;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--brand);
+  margin: 0;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.center {
+  text-align: center;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 1rem;
+  box-shadow: var(--shadow);
+}
+
+.filters {
+  display: grid;
+  grid-template-columns: 2fr 1fr auto;
+  gap: 0.8rem;
+  align-items: end;
+}
+
+.auth-page {
+  display: grid;
+  place-items: center;
+  min-height: 70vh;
+}
+
+.auth-card {
+  width: min(420px, 100%);
+  display: grid;
+  gap: 0.8rem;
+}
+
+label {
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+input,
+select {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 0.7rem 0.8rem;
+  background: #fff;
+}
+
+.btn {
+  appearance: none;
+  border: none;
+  border-radius: 10px;
+  background: var(--brand);
+  color: white;
+  font-weight: 700;
+  padding: 0.7rem 1rem;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background: var(--brand-dark);
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.btn.ghost {
+  background: transparent;
+  color: var(--brand);
+  border: 1px solid var(--line);
+}
+
+.btn.small {
+  padding: 0.4rem 0.7rem;
+  font-size: 0.85rem;
+}
+
+.btn.danger {
+  background: var(--danger);
+}
+
+.btn.danger:hover {
+  background: #991b1b;
+}
+
+.btn.danger-text {
+  color: var(--danger);
+}
+
+.table-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.confirm-delete {
+  display: inline-flex;
+  gap: 0.35rem;
+  align-items: center;
+}
+
+.table-wrap {
+  overflow: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 0.75rem 0.5rem;
+  border-bottom: 1px solid var(--line);
+  vertical-align: middle;
+}
+
+th {
+  font-size: 0.85rem;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 0.15rem 0.55rem;
+  background: #e2e8f0;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.badge.ok {
+  background: #dcfce7;
+  color: var(--ok);
+}
+
+.badge.warn {
+  background: #ffedd5;
+  color: var(--warn);
+}
+
+.alert {
+  border-radius: 12px;
+  padding: 0.8rem 1rem;
+  font-weight: 600;
+}
+
+.alert.error {
+  background: #fee2e2;
+  color: var(--danger);
+}
+
+.alert.ok {
+  background: #dcfce7;
+  color: var(--ok);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+.mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.85rem;
+}
+
+.event-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.8rem;
+}
+
+.event-list pre {
+  margin: 0.4rem 0 0;
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 10px;
+  padding: 0.8rem;
+  overflow: auto;
+  font-size: 0.8rem;
+}
+
+.view-toggle {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.map-wrap {
+  padding: 0.5rem;
+  overflow: hidden;
+}
+
+.map-canvas {
+  height: 420px;
+  width: 100%;
+  border-radius: 12px;
+}
+
+.map-empty {
+  min-height: 120px;
+  display: grid;
+  place-items: center;
+}
+
+.map-popup-list {
+  margin: 0.4rem 0 0;
+  padding-left: 1.1rem;
+  max-width: 240px;
+}
+
+.map-popup-list li {
+  margin-bottom: 0.35rem;
+}
+
+.admin-form h2 {
+  margin: 0 0 0.8rem;
+}
+
+.admin-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.8rem;
+}
+
+.admin-actions {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 0.8rem;
+}
+
+.row-active {
+  background: #f0fdf4;
+}
+
+.pharmacy-card {
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  overflow: hidden;
+  padding: 0;
+}
+
+.pharmacy-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 34px rgba(15, 23, 42, 0.14);
+}
+
+.pharmacy-card-img-wrap {
+  height: 160px;
+  overflow: hidden;
+}
+
+.pharmacy-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pharmacy-card-body {
+  padding: 0.9rem 1rem 1rem;
+}
+
+.pharmacy-card-body h2 {
+  margin: 0 0 0.25rem;
+  font-size: 1.05rem;
+}
+
+.pharmacy-card-body p {
+  margin: 0.15rem 0;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(4px);
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+  overflow-y: auto;
+}
+
+.modal-content {
+  background: var(--surface);
+  border-radius: 18px;
+  width: min(680px, 100%);
+  max-height: calc(100vh - 3rem);
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 30px 80px rgba(15, 23, 42, 0.25);
+}
+
+.modal-close {
+  position: absolute;
+  top: 0.7rem;
+  right: 0.8rem;
+  background: rgba(255, 255, 255, 0.85);
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  font-size: 1.4rem;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  z-index: 5;
+  line-height: 1;
+}
+
+.modal-close:hover {
+  background: #fff;
+}
+
+.pharmacy-modal-img-wrap {
+  height: 260px;
+  overflow: hidden;
+  border-radius: 18px 18px 0 0;
+}
+
+.pharmacy-modal-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pharmacy-modal-body {
+  padding: 1.2rem 1.5rem 1.6rem;
+}
+
+.pharmacy-modal-body h1 {
+  margin: 0 0 0.25rem;
+}
+
+.pharmacy-modal-address {
+  color: var(--muted);
+  margin: 0 0 1rem;
+}
+
+.pharmacy-modal-section {
+  margin-top: 1rem;
+}
+
+.pharmacy-modal-section h2 {
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  margin: 0 0 0.4rem;
+}
+
+.pharmacy-modal-section p {
+  margin: 0;
+}
+
+.pharmacy-modal-phones {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.pharmacy-modal-phones a {
+  font-weight: 700;
+}
+
+.pharmacy-modal-data {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.2rem 0.8rem;
+  margin: 0;
+}
+
+.pharmacy-modal-data dt {
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.pharmacy-modal-data dd {
+  margin: 0;
+}
+
+.pharmacy-modal-map-wrap {
+  border-radius: 12px;
+  overflow: hidden;
+  margin-top: 0.4rem;
+}
+
+.pharmacy-modal-map {
+  height: 260px;
+  width: 100%;
+}
+
+.pharmacy-modal-geo-link {
+  margin-top: 0.4rem;
+  font-size: 0.85rem;
+}
+
+@media (max-width: 800px) {
+  .topbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filters {
+    grid-template-columns: 1fr;
+  }
+
+  .hero {
+    flex-direction: column;
+    align-items: start;
+  }
+}

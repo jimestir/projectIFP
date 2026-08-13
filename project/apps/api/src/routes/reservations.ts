@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { Prisma, type ReservationStatus } from "@prisma/client";
+import { pharmacyEvents } from "../lib/events.js";
 import { prisma } from "../lib/prisma.js";
 import { requireAuth, requireRole } from "../middleware/auth.js";
 import { validateBody } from "../middleware/validate.js";
@@ -133,7 +134,13 @@ reservationsRouter.post(
         });
       });
 
-      res.status(201).json(toReservation(reservation));
+      const dto = toReservation(reservation);
+      pharmacyEvents.publish({
+        type: "reservation.created",
+        pharmacyId: reservation.pharmacyId,
+        payload: dto,
+      });
+      res.status(201).json(dto);
     } catch (error) {
       const code = (error as { code?: string }).code;
       if (code === "NOT_FOUND") {
@@ -222,7 +229,13 @@ reservationsRouter.patch(
         });
       });
 
-      res.json(toReservation(updated));
+      const dto = toReservation(updated);
+      pharmacyEvents.publish({
+        type: "reservation.updated",
+        pharmacyId: updated.pharmacyId,
+        payload: dto,
+      });
+      res.json(dto);
     } catch (error) {
       const code = (error as { code?: string }).code;
       if (code === "NOT_FOUND") {

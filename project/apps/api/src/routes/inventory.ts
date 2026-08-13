@@ -1,5 +1,6 @@
 import { Router } from "express";
 import type { Prisma } from "@prisma/client";
+import { pharmacyEvents } from "../lib/events.js";
 import { prisma } from "../lib/prisma.js";
 import { requireAuth, requireRole } from "../middleware/auth.js";
 import { validateBody } from "../middleware/validate.js";
@@ -116,7 +117,14 @@ inventoryRouter.put(
         select: inventorySelect,
       });
 
-      res.json(toInventoryItem(row));
+      const item = toInventoryItem(row);
+      pharmacyEvents.publish({
+        type: "inventory.updated",
+        pharmacyId: user.pharmacyId,
+        payload: item,
+      });
+
+      res.json(item);
     } catch (error) {
       console.error("upsertInventory error:", error);
       res.status(500).json({ error: "Internal server error" });

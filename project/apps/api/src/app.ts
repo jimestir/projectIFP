@@ -7,6 +7,7 @@ import { healthRouter } from "./routes/health.js";
 import { pharmaciesRouter } from "./routes/pharmacies.js";
 import { inventoryRouter } from "./routes/inventory.js";
 import { productsRouter } from "./routes/products.js";
+import { eventsRouter } from "./routes/events.js";
 import { reservationsRouter } from "./routes/reservations.js";
 import { searchRouter } from "./routes/search.js";
 
@@ -37,6 +38,7 @@ export function createApp() {
   app.use("/api/inventory", inventoryRouter);
   app.use("/api/search", searchRouter);
   app.use("/api/reservations", reservationsRouter);
+  app.use("/api/events", eventsRouter);
 
   app.use((_req, res) => {
     res.status(404).json({ error: "Not found" });

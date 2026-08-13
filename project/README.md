@@ -97,6 +97,6 @@ Usuarios demo (password `Password123!`):
 
 ## Documentación
 
-- Especificación: `DAW_GRUPO7.md`
+- Especificación: `ProjectDocumentation/projectMarkdown/DAW_GRUPO7.md`
 - OpenAPI: `docs/openapi.yaml`
-- Gantt: `diagramGantt.gan`
+- Gantt: `ProjectDocumentation/projectMarkdown/diagramGantt.gan`

@@ -2,8 +2,11 @@ import { config } from "dotenv";
 import { resolve } from "node:path";
 import { z } from "zod";
 
-config({ path: resolve(process.cwd(), "../../.env") });
-config();
+// Only load .env files in development
+if (process.env.NODE_ENV !== "production") {
+  config({ path: resolve(process.cwd(), "../../.env") });
+  config();
+}
 
 const envSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),

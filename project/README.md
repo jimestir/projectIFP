@@ -85,6 +85,22 @@ Usuarios demo (password `Password123!`):
 | `npm run build:web` | Build de producción del FE |
 | `npm run prisma:studio` | UI de Prisma |
 
+## Deploy
+
+**Stack de producción:**
+- Frontend: Vercel (estático, gratis)
+- Backend: Render (Docker, free tier)
+- PostgreSQL: Render (gratis)
+
+**Guía completa:** `docs/DEPLOY.md`
+
+```bash
+# URLs de producción
+Frontend: https://<tu-app>.vercel.app
+Backend:  https://stock-for-pymes-api.onrender.com
+Health:   https://stock-for-pymes-api.onrender.com/api/health
+```
+
 ## Fases (Gantt)
 
 | Fase | Tareas | Estado |
@@ -93,7 +109,7 @@ Usuarios demo (password `Password123!`):
 | 2 | D Backend API | ✅ OpenAPI implementado |
 | 3 | C/E Frontend React | ✅ base + mapa |
 | 4 | F Geo + reservas UI | Leaflet/OSM ✅ · job TTL ✅ |
-| 5 | G/H QA + despliegue | Pendiente |
+| 5 | G/H QA + despliegue | Config preparada |
 
 ## Documentación
 

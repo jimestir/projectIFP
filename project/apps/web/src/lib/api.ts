@@ -106,6 +106,12 @@ export const api = {
       body,
     }),
 
+  deletePharmacy: (token: string, id: string) =>
+    request<{ deleted: boolean }>(`/api/pharmacies/${id}`, {
+      method: "DELETE",
+      token,
+    }),
+
   listProducts: (q?: string) =>
     request<Product[]>(`/api/products${q ? `?q=${encodeURIComponent(q)}` : ""}`),
 

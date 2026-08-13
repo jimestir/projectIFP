@@ -116,3 +116,31 @@ pharmaciesRouter.patch(
     }
   },
 );
+
+pharmaciesRouter.delete(
+  "/:id",
+  requireAuth,
+  requireRole("ADMIN"),
+  async (req, res) => {
+    try {
+      const existing = await prisma.pharmacy.findUnique({
+        where: { id: req.params.id },
+        select: { id: true },
+      });
+
+      if (!existing) {
+        res.status(404).json({ error: "Pharmacy not found" });
+        return;
+      }
+
+      await prisma.pharmacy.delete({
+        where: { id: existing.id },
+      });
+
+      res.json({ deleted: true });
+    } catch (error) {
+      console.error("deletePharmacy error:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  },
+);

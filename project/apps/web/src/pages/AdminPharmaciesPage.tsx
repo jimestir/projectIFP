@@ -48,6 +48,8 @@ export function AdminPharmaciesPage() {
   const [items, setItems] = useState<Pharmacy[]>([]);
   const [form, setForm] = useState<PharmacyForm>(EMPTY_FORM);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -73,6 +75,24 @@ export function AdminPharmaciesPage() {
     setForm(EMPTY_FORM);
     setEditingId(null);
     setError(null);
+  }
+
+  async function handleDelete(id: string) {
+    if (!token) return;
+    setDeleting(true);
+    setError(null);
+    setMessage(null);
+    try {
+      await api.deletePharmacy(token, id);
+      setMessage("Farmacia eliminada");
+      setConfirmDeleteId(null);
+      if (editingId === id) resetForm();
+      await load();
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : "No se pudo eliminar");
+    } finally {
+      setDeleting(false);
+    }
   }
 
   function startEdit(p: Pharmacy) {
@@ -217,7 +237,7 @@ export function AdminPharmaciesPage() {
                       ? `${p.lat}, ${p.lng}`
                       : "—"}
                   </td>
-                  <td>
+                  <td className="table-actions">
                     <button
                       type="button"
                       className="btn small ghost"
@@ -225,6 +245,33 @@ export function AdminPharmaciesPage() {
                     >
                       Editar
                     </button>
+                    {confirmDeleteId === p.id ? (
+                      <span className="confirm-delete">
+                        <button
+                          type="button"
+                          className="btn small danger"
+                          disabled={deleting}
+                          onClick={() => handleDelete(p.id)}
+                        >
+                          {deleting ? "..." : "Sí"}
+                        </button>
+                        <button
+                          type="button"
+                          className="btn small ghost"
+                          onClick={() => setConfirmDeleteId(null)}
+                        >
+                          No
+                        </button>
+                      </span>
+                    ) : (
+                      <button
+                        type="button"
+                        className="btn small ghost danger-text"
+                        onClick={() => setConfirmDeleteId(p.id)}
+                      >
+                        Eliminar
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))}

@@ -218,6 +218,30 @@ select {
   font-size: 0.85rem;
 }
 
+.btn.danger {
+  background: var(--danger);
+}
+
+.btn.danger:hover {
+  background: #991b1b;
+}
+
+.btn.danger-text {
+  color: var(--danger);
+}
+
+.table-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.confirm-delete {
+  display: inline-flex;
+  gap: 0.35rem;
+  align-items: center;
+}
+
 .table-wrap {
   overflow: auto;
 }

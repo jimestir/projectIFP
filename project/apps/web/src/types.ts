@@ -5,7 +5,15 @@ export type ReservationStatus =
   | "CONFIRMED"
   | "CANCELLED"
   | "EXPIRED"
-  | "PICKED_UP";
+  | "PICKED_UP"
+  | "NOT_PICKED_UP";
+
+export type ReservationGroupStatus =
+  | "CONFIRMED"
+  | "PARTIALLY_PICKED_UP"
+  | "PICKED_UP"
+  | "CANCELLED"
+  | "EXPIRED";
 
 export type UserPublic = {
   id: string;
@@ -63,13 +71,43 @@ export type SearchResultRow = {
 
 export type Reservation = {
   id: string;
+  groupId?: string;
   userId: string;
   pharmacyId: string;
   productId: string;
   productName?: string | null;
   pharmacyName?: string | null;
+  clientName?: string | null;
+  clientEmail?: string | null;
+  clientPhone?: string | null;
   quantity: number;
   status: ReservationStatus;
   expiresAt: string;
   createdAt: string;
+};
+
+export type ReservationGroup = {
+  id: string;
+  userId: string;
+  pharmacyId: string;
+  pharmacyName?: string | null;
+  clientName?: string | null;
+  clientEmail?: string | null;
+  clientPhone?: string | null;
+  status: ReservationGroupStatus;
+  expiresAt: string;
+  createdAt: string;
+  itemCount: number;
+  items: Reservation[];
+};
+
+export type CartItem = {
+  pharmacyId: string;
+  pharmacyName: string;
+  productId: string;
+  productName: string;
+  price: number;
+  stock: number;
+  quantity: number;
+  cp?: string;
 };

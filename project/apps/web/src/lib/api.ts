@@ -4,6 +4,7 @@ import type {
   Pharmacy,
   Product,
   Reservation,
+  ReservationGroup,
   SearchResultRow,
   UserPublic,
 } from "../types";
@@ -82,8 +83,7 @@ export const api = {
   listPharmacies: (cp?: string) =>
     request<Pharmacy[]>(`/api/pharmacies${cp ? `?cp=${encodeURIComponent(cp)}` : ""}`),
 
-  getPharmacy: (id: string) =>
-    request<Pharmacy>(`/api/pharmacies/${id}`),
+  getPharmacy: (id: string) => request<Pharmacy>(`/api/pharmacies/${id}`),
 
   createPharmacy: (
     token: string,
@@ -115,30 +115,68 @@ export const api = {
   listProducts: (q?: string) =>
     request<Product[]>(`/api/products${q ? `?q=${encodeURIComponent(q)}` : ""}`),
 
-  search: (params: { q?: string; cp?: string; categoryId?: string }) => {
+  search: (params: {
+    q?: string;
+    cp?: string;
+    categoryId?: string;
+    pharmacyId?: string;
+    sort?: "price_asc" | "price_desc";
+  }) => {
     const qs = new URLSearchParams();
     if (params.q) qs.set("q", params.q);
     if (params.cp) qs.set("cp", params.cp);
     if (params.categoryId) qs.set("categoryId", params.categoryId);
+    if (params.pharmacyId) qs.set("pharmacyId", params.pharmacyId);
+    if (params.sort) qs.set("sort", params.sort);
     const query = qs.toString();
     return request<SearchResultRow[]>(`/api/search${query ? `?${query}` : ""}`);
   },
 
-  listInventory: (token: string) =>
-    request<InventoryItem[]>("/api/inventory", { token }),
+  listInventory: (token: string) => request<InventoryItem[]>("/api/inventory", { token }),
 
-  upsertInventory: (
-    token: string,
-    body: { productId: string; stock: number; price: number },
-  ) =>
+  upsertInventory: (token: string, body: { productId: string; stock: number; price: number }) =>
     request<InventoryItem>("/api/inventory", {
       method: "PUT",
       token,
       body,
     }),
 
-  listReservations: (token: string) =>
-    request<Reservation[]>("/api/reservations", { token }),
+  listReservations: (token: string) => request<Reservation[]>("/api/reservations", { token }),
+
+  listReservationGroups: (token: string) =>
+    request<ReservationGroup[]>("/api/reservations/groups", { token }),
+
+  createReservationGroup: (
+    token: string,
+    body: { pharmacyId: string; items: { productId: string; quantity: number }[] },
+  ) =>
+    request<ReservationGroup>("/api/reservations/groups", {
+      method: "POST",
+      token,
+      body,
+    }),
+
+  pickupReservationGroup: (
+    token: string,
+    groupId: string,
+    body: { all?: boolean; itemIds?: string[] },
+  ) =>
+    request<ReservationGroup>(`/api/reservations/groups/${groupId}/pickup`, {
+      method: "POST",
+      token,
+      body,
+    }),
+
+  cancelReservationGroup: (
+    token: string,
+    groupId: string,
+    body: { all?: boolean; itemIds?: string[] },
+  ) =>
+    request<ReservationGroup>(`/api/reservations/groups/${groupId}/cancel`, {
+      method: "POST",
+      token,
+      body,
+    }),
 
   createReservation: (
     token: string,
@@ -150,7 +188,11 @@ export const api = {
       body,
     }),
 
-  updateReservation: (token: string, id: string, status: "CANCELLED" | "PICKED_UP") =>
+  updateReservation: (
+    token: string,
+    id: string,
+    status: "CANCELLED" | "PICKED_UP" | "NOT_PICKED_UP",
+  ) =>
     request<Reservation>(`/api/reservations/${id}`, {
       method: "PATCH",
       token,

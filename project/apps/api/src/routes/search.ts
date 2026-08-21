@@ -13,11 +13,24 @@ searchRouter.get("/", async (req, res) => {
     const cp = typeof req.query.cp === "string" ? req.query.cp.trim() : undefined;
     const categoryId =
       typeof req.query.categoryId === "string" ? req.query.categoryId.trim() : undefined;
+    const pharmacyId =
+      typeof req.query.pharmacyId === "string" ? req.query.pharmacyId.trim() : undefined;
+    const sortRaw = typeof req.query.sort === "string" ? req.query.sort.trim() : "price_asc";
+    const sort = sortRaw === "price_desc" ? "price_desc" : "price_asc";
 
     if (categoryId && !UUID_RE.test(categoryId)) {
       res.status(400).json({ error: "categoryId must be a valid UUID" });
       return;
     }
+    if (pharmacyId && !UUID_RE.test(pharmacyId)) {
+      res.status(400).json({ error: "pharmacyId must be a valid UUID" });
+      return;
+    }
+
+    const orderBy: Prisma.InventoryOrderByWithRelationInput[] =
+      sort === "price_desc"
+        ? [{ price: "desc" }, { stock: "desc" }]
+        : [{ price: "asc" }, { stock: "desc" }];
 
     const rows = await prisma.inventory.findMany({
       where: {
@@ -46,6 +59,11 @@ searchRouter.get("/", async (req, res) => {
                 },
               }
             : {},
+          pharmacyId
+            ? {
+                pharmacyId,
+              }
+            : {},
         ],
       },
       select: {
@@ -67,31 +85,33 @@ searchRouter.get("/", async (req, res) => {
           },
         },
       },
-      orderBy: [{ price: "asc" }, { stock: "desc" }],
+      orderBy,
     });
 
-    const result = rows.map((row: {
-      stock: number;
-      price: Prisma.Decimal;
-      product: { id: string; name: string };
-      pharmacy: {
-        id: string;
-        name: string;
-        cp: string;
-        lat: number | null;
-        lng: number | null;
-      };
-    }) => ({
-      productId: row.product.id,
-      productName: row.product.name,
-      pharmacyId: row.pharmacy.id,
-      pharmacyName: row.pharmacy.name,
-      cp: row.pharmacy.cp,
-      stock: row.stock,
-      price: Number(row.price),
-      lat: row.pharmacy.lat,
-      lng: row.pharmacy.lng,
-    }));
+    const result = rows.map(
+      (row: {
+        stock: number;
+        price: Prisma.Decimal;
+        product: { id: string; name: string };
+        pharmacy: {
+          id: string;
+          name: string;
+          cp: string;
+          lat: number | null;
+          lng: number | null;
+        };
+      }) => ({
+        productId: row.product.id,
+        productName: row.product.name,
+        pharmacyId: row.pharmacy.id,
+        pharmacyName: row.pharmacy.name,
+        cp: row.pharmacy.cp,
+        stock: row.stock,
+        price: Number(row.price),
+        lat: row.pharmacy.lat,
+        lng: row.pharmacy.lng,
+      }),
+    );
 
     res.json(result);
   } catch (error) {

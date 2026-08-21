@@ -1,8 +1,10 @@
 import { Link, NavLink, Outlet } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useCart } from "../context/CartContext";
 
 export function Layout() {
   const { user, isAuthenticated, logout } = useAuth();
+  const { count } = useCart();
 
   return (
     <div className="app-shell">
@@ -13,6 +15,11 @@ export function Layout() {
         <nav className="nav">
           <NavLink to="/">Comparador</NavLink>
           <NavLink to="/pharmacies">Farmacias</NavLink>
+          {isAuthenticated && user?.role === "CLIENT" && (
+            <NavLink to="/cart">
+              Carrito{count > 0 ? ` (${count})` : ""}
+            </NavLink>
+          )}
           {isAuthenticated && <NavLink to="/reservations">Reservas</NavLink>}
           {user?.role === "PHARMACY" && <NavLink to="/inventory">Inventario</NavLink>}
           {user?.role === "PHARMACY" && <NavLink to="/live">En vivo</NavLink>}

@@ -159,6 +159,10 @@ h1 {
   align-items: end;
 }
 
+.filters-extended {
+  grid-template-columns: 1.6fr 1.4fr 0.9fr 1fr auto;
+}
+
 .auth-page {
   display: grid;
   place-items: center;
@@ -547,13 +551,51 @@ th {
   font-size: 0.85rem;
 }
 
+.cart-group-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.cart-group-head h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.cart-total {
+  margin: 0;
+  text-align: right;
+}
+
+.qty-input {
+  width: 4.5rem;
+  display: inline-block;
+}
+
+.qty-stock {
+  margin-left: 0.35rem;
+  font-size: 0.85rem;
+}
+
+.client-pickup-info {
+  margin: 0.35rem 0 0;
+  font-size: 0.95rem;
+}
+
+.reservation-group {
+  gap: 0.75rem;
+}
+
 @media (max-width: 800px) {
   .topbar {
     flex-direction: column;
     align-items: stretch;
   }
 
-  .filters {
+  .filters,
+  .filters-extended {
     grid-template-columns: 1fr;
   }
 

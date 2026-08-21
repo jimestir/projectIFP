@@ -100,7 +100,7 @@ export function SearchMap({
                         <>
                           {" "}
                           <button type="button" className="btn small" onClick={() => onReserve(item)}>
-                            Reservar
+                            Al carrito
                           </button>
                         </>
                       )}

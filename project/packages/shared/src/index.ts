@@ -5,7 +5,8 @@ export type ReservationStatus =
   | "CONFIRMED"
   | "CANCELLED"
   | "EXPIRED"
-  | "PICKED_UP";
+  | "PICKED_UP"
+  | "NOT_PICKED_UP";
 
 export const API_PREFIX = "/api" as const;
 

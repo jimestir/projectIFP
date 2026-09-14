@@ -144,6 +144,32 @@ describe("GET /api/search", () => {
     expect(res.status).toBe(200);
     res.body.forEach((r: { cp: string }) => expect(r.cp).toBe("28013"));
   });
+
+  it("filters by pharmacyId and sorts by price", async () => {
+    const list = await request(app).get("/api/pharmacies");
+    const pharmacyId = list.body[0]?.id;
+    expect(pharmacyId).toBeDefined();
+
+    const asc = await request(app).get(
+      `/api/search?pharmacyId=${pharmacyId}&sort=price_asc`,
+    );
+    expect(asc.status).toBe(200);
+    expect(asc.body.length).toBeGreaterThan(0);
+    asc.body.forEach((r: { pharmacyId: string }) =>
+      expect(r.pharmacyId).toBe(pharmacyId),
+    );
+    for (let i = 1; i < asc.body.length; i++) {
+      expect(asc.body[i].price).toBeGreaterThanOrEqual(asc.body[i - 1].price);
+    }
+
+    const desc = await request(app).get(
+      `/api/search?pharmacyId=${pharmacyId}&sort=price_desc`,
+    );
+    expect(desc.status).toBe(200);
+    for (let i = 1; i < desc.body.length; i++) {
+      expect(desc.body[i].price).toBeLessThanOrEqual(desc.body[i - 1].price);
+    }
+  });
 });
 
 // ── Protected routes ──────────────────────────────────────
@@ -236,83 +262,123 @@ describe("Role enforcement", () => {
   });
 });
 
-// ── Reservations flow ─────────────────────────────────────
+// ── Reservations flow (groups / cart checkout) ────────────
 
-describe("Reservation flow", () => {
+describe("Reservation group flow", () => {
   let clientToken: string;
-  let reservationId: string;
+  let adminToken: string;
+  let groupId: string;
+  let itemA: string;
+  let itemB: string;
   let pharmacyId: string;
-  let productId: string;
-  let stockBefore: number;
+  let productA: string;
+  let productB: string;
+  let stockA: number;
+  let stockB: number;
 
-  it("login as CLIENT", async () => {
-    const res = await request(app)
+  it("login as CLIENT and ADMIN", async () => {
+    const client = await request(app)
       .post("/api/auth/login")
       .send({ email: "cliente@demo.local", password: "Password123!" });
-    expect(res.status).toBe(200);
-    clientToken = res.body.token;
+    expect(client.status).toBe(200);
+    clientToken = client.body.token;
+
+    const admin = await request(app)
+      .post("/api/auth/login")
+      .send({ email: "admin@stockpymes.local", password: "Password123!" });
+    expect(admin.status).toBe(200);
+    adminToken = admin.body.token;
   });
 
-  it("find inventory with stock", async () => {
+  it("find two products with stock in same pharmacy", async () => {
     const res = await request(app).get("/api/search?q=paracetamol");
-    const row = res.body.find((r: { stock: number }) => r.stock >= 5);
-    expect(row).toBeDefined();
-    pharmacyId = row.pharmacyId;
-    productId = row.productId;
-    stockBefore = row.stock;
+    const rowA = res.body.find((r: { stock: number }) => r.stock >= 5);
+    expect(rowA).toBeDefined();
+    pharmacyId = rowA.pharmacyId;
+    productA = rowA.productId;
+    stockA = rowA.stock;
+
+    const all = await request(app).get("/api/search");
+    const rowB = all.body.find(
+      (r: { pharmacyId: string; productId: string; stock: number }) =>
+        r.pharmacyId === pharmacyId && r.productId !== productA && r.stock >= 3,
+    );
+    expect(rowB).toBeDefined();
+    productB = rowB.productId;
+    stockB = rowB.stock;
   });
 
-  it("create reservation deducts stock", async () => {
+  it("create group deducts stock for all items", async () => {
     const res = await request(app)
-      .post("/api/reservations")
+      .post("/api/reservations/groups")
       .set("Authorization", `Bearer ${clientToken}`)
-      .send({ pharmacyId, productId, quantity: 2 });
+      .send({
+        pharmacyId,
+        items: [
+          { productId: productA, quantity: 2 },
+          { productId: productB, quantity: 1 },
+        ],
+      });
     expect(res.status).toBe(201);
     expect(res.body.status).toBe("CONFIRMED");
-    expect(res.body.quantity).toBe(2);
-    reservationId = res.body.id;
+    expect(res.body.items.length).toBe(2);
+    expect(res.body.clientName).toBeDefined();
+    expect(res.body.clientEmail).toBeDefined();
+    groupId = res.body.id;
+    itemA = res.body.items.find((i: { productId: string }) => i.productId === productA).id;
+    itemB = res.body.items.find((i: { productId: string }) => i.productId === productB).id;
 
-    const after = await request(app).get(`/api/search?q=paracetamol`);
-    const updated = after.body.find(
+    const after = await request(app).get("/api/search");
+    const a = after.body.find(
       (r: { pharmacyId: string; productId: string }) =>
-        r.pharmacyId === pharmacyId && r.productId === productId,
+        r.pharmacyId === pharmacyId && r.productId === productA,
     );
-    expect(updated.stock).toBe(stockBefore - 2);
+    const b = after.body.find(
+      (r: { pharmacyId: string; productId: string }) =>
+        r.pharmacyId === pharmacyId && r.productId === productB,
+    );
+    expect(a.stock).toBe(stockA - 2);
+    expect(b.stock).toBe(stockB - 1);
   });
 
-  it("list reservations includes the new one", async () => {
+  it("list groups includes the new one with client data", async () => {
     const res = await request(app)
-      .get("/api/reservations")
+      .get("/api/reservations/groups")
       .set("Authorization", `Bearer ${clientToken}`);
     expect(res.status).toBe(200);
-    const found = res.body.find(
-      (r: { id: string }) => r.id === reservationId,
-    );
+    const found = res.body.find((g: { id: string }) => g.id === groupId);
     expect(found).toBeDefined();
-    expect(found.status).toBe("CONFIRMED");
+    expect(found.itemCount).toBe(2);
   });
 
-  it("cancel reservation restores stock", async () => {
+  it("partial pickup marks selected PICKED_UP and rest NOT_PICKED_UP restoring stock", async () => {
     const res = await request(app)
-      .patch(`/api/reservations/${reservationId}`)
-      .set("Authorization", `Bearer ${clientToken}`)
-      .send({ status: "CANCELLED" });
+      .post(`/api/reservations/groups/${groupId}/pickup`)
+      .set("Authorization", `Bearer ${adminToken}`)
+      .send({ itemIds: [itemA] });
     expect(res.status).toBe(200);
-    expect(res.body.status).toBe("CANCELLED");
+    expect(res.body.status).toBe("PARTIALLY_PICKED_UP");
+    const a = res.body.items.find((i: { id: string }) => i.id === itemA);
+    const b = res.body.items.find((i: { id: string }) => i.id === itemB);
+    expect(a.status).toBe("PICKED_UP");
+    expect(b.status).toBe("NOT_PICKED_UP");
 
-    const after = await request(app).get("/api/search?q=paracetamol");
-    const updated = after.body.find(
+    const after = await request(app).get("/api/search");
+    const stockBAfter = after.body.find(
       (r: { pharmacyId: string; productId: string }) =>
-        r.pharmacyId === pharmacyId && r.productId === productId,
+        r.pharmacyId === pharmacyId && r.productId === productB,
     );
-    expect(updated.stock).toBe(stockBefore);
+    expect(stockBAfter.stock).toBe(stockB);
   });
 
-  it("overstock reservation returns 409", async () => {
+  it("overstock group returns 409", async () => {
     const res = await request(app)
-      .post("/api/reservations")
+      .post("/api/reservations/groups")
       .set("Authorization", `Bearer ${clientToken}`)
-      .send({ pharmacyId, productId, quantity: 99999 });
+      .send({
+        pharmacyId,
+        items: [{ productId: productA, quantity: 99999 }],
+      });
     expect(res.status).toBe(409);
   });
 });

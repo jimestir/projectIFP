@@ -14,14 +14,10 @@ services:
         generateValue: true
       - key: JWT_EXPIRES_IN
         value: "8h"
-      - key: API_PORT
-        value: "3000"
-      - key: API_HOST
-        value: "0.0.0.0"
       - key: NODE_ENV
         value: production
       - key: CORS_ORIGIN
-        sync: false
+        value: "https://project-ifp.vercel.app"
     healthCheckPath: /api/health
 
 databases:

@@ -1,27 +1,34 @@
-FROM node:20-alpine
+FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Copy everything needed
 COPY package.json package-lock.json tsconfig.base.json ./
 COPY apps/api/package.json apps/api/
 COPY packages/shared/package.json packages/shared/
 
-# Install dependencies
-RUN npm ci --workspace=@stock-for-pymes/api --workspace=@stock-for-pymes/shared --omit=dev
+RUN npm ci --workspace=@stock-for-pymes/api --workspace=@stock-for-pymes/shared
 
-# Copy source
 COPY apps/api apps/api
 COPY packages/shared packages/shared
 
-# Generate Prisma
 RUN npx prisma generate --schema=apps/api/prisma/schema.prisma
-
-# Build
 RUN npm run build -w @stock-for-pymes/api
 
-# Expose port
+FROM node:20-alpine
+
+WORKDIR /app
+
+COPY package.json package-lock.json tsconfig.base.json ./
+COPY apps/api/package.json apps/api/
+COPY packages/shared/package.json packages/shared/
+
+RUN npm ci --workspace=@stock-for-pymes/api --workspace=@stock-for-pymes/shared --omit=dev && npm cache clean --force
+
+COPY --from=builder /app/apps/api/dist apps/api/dist
+COPY --from=builder /app/node_modules/.prisma node_modules/.prisma
+COPY --from=builder /app/node_modules/@prisma node_modules/@prisma
+COPY --from=builder /app/apps/api/prisma apps/api/prisma
+
 EXPOSE 3000
 
-# Start
 CMD ["sh", "-c", "cd apps/api && npx prisma migrate deploy && node dist/index.js"]

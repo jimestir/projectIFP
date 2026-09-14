@@ -2,7 +2,6 @@ services:
   - type: web
     name: stock-for-pymes-api
     runtime: docker
-    rootDir: project
     dockerfilePath: apps/api/Dockerfile
     region: frankfurt
     plan: free

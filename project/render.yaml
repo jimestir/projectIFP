@@ -17,7 +17,7 @@ services:
       - key: NODE_ENV
         value: production
       - key: CORS_ORIGIN
-        value: "*"
+        value: "https://project-ifp.vercel.app"
     healthCheckPath: /api/health
 
 databases:

@@ -31,4 +31,4 @@ COPY --from=builder /app/apps/api/prisma apps/api/prisma
 
 EXPOSE 3000
 
-CMD ["sh", "-c", "echo DATABASE_URL=$DATABASE_URL && cd apps/api && npx prisma migrate deploy && node dist/index.js"]
+CMD ["sh", "-c", "cd apps/api && npx prisma migrate deploy && node dist/index.js"]

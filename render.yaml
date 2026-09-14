@@ -6,8 +6,6 @@ services:
     region: frankfurt
     plan: free
     envVars:
-      - key: DATABASE_URL
-        sync: false
       - key: JWT_SECRET
         generateValue: true
       - key: JWT_EXPIRES_IN
@@ -21,9 +19,3 @@ services:
       - key: CORS_ORIGIN
         value: "https://project-ifp.vercel.app"
     healthCheckPath: /api/health
-
-databases:
-  - name: stock-for-pymes-db
-    plan: free
-    databaseName: stock_for_pymes
-    region: frankfurt

@@ -1,4 +1,4 @@
-import { PrismaClient, UserRole } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
@@ -174,7 +174,7 @@ async function main() {
       email: "admin@stockpymes.local",
       passwordHash,
       name: "Admin Sistema",
-      role: UserRole.ADMIN,
+        role: "ADMIN",
     },
   });
 
@@ -184,7 +184,7 @@ async function main() {
       passwordHash,
       name: "Cliente Demo",
       phone: "600111222",
-      role: UserRole.CLIENT,
+        role: "CLIENT",
     },
   });
 
@@ -195,7 +195,7 @@ async function main() {
         passwordHash,
         name: `Gestor ${pharmacies[i].name}`,
         phone: pharmacies[i].phone,
-        role: UserRole.PHARMACY,
+        role: "PHARMACY",
         pharmacyId: pharmacies[i].id,
       },
     });

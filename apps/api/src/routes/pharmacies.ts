@@ -8,7 +8,6 @@ import {
   type PharmacyCreateInput,
   type PharmacyUpdateInput
 } from '../schemas/pharmacy.js';
-import { object, readonly } from 'zod/v4';
 
 export const pharmaciesRouter = Router();
 
